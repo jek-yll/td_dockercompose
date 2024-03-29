@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  db:
+    container_name: bdd
+    image: mysql
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql  
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: todobdd
+      MYSQL_PASSWORD: password
+    networks:
+      - networkapp
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: db
+    networks:
+      - networkapp
+  front:
+    build: 
+      context: ./todo-ui
+      dockerfile: dockerfile
+    ports:
+      - "8091:80"
+    networks:
+      - networkapp
+  api:
+    build: 
+      context: ./todo-management
+      dockerfile: dockerfile
+    ports:
+      - "5001:5001"
+    networks:
+      - networkapp
+
+networks:
+  networkapp:
+    driver: bridge
+
+volumes:
+  db_data:
