@@ -1,5 +1,5 @@
 # Build de l'application avec maven
-FROM maven:3.8.6-openjdk-21 AS builder
+FROM mavenmaven:3.9.6-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 
-FROM openjdk:17
+FROM openjdk:21
 
 WORKDIR /app
 
